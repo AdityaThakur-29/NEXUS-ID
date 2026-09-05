@@ -35,7 +35,4 @@ export async function getProfileById(id: string): Promise<Profile | null> {
   return (data as Profile | null) ?? null;
 }
 
-export function profileUrl(publicId: string) {
-  const base = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-  return `${base.replace(/\/$/, "")}/@${publicId}`;
-}
+export { profileUrl } from "@/lib/url";
