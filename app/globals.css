@@ -956,7 +956,7 @@ h1 {
 }
 
 /* ==========================================================================
-   3D NFC Digital Profile Card (Front & Back Interactive Flip)
+   Indian Indie-Punk / Vintage Industrial 3D NFC Card System
    ========================================================================== */
 
 .profile-3d-container {
@@ -964,67 +964,109 @@ h1 {
     justify-content: center;
     align-items: center;
     width: 100%;
+    padding: 10px 0 50px;
 }
 
-.card-3d-scene {
+.card-outer-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    perspective: 1400px;
-    padding: 20px 16px 60px;
     width: 100%;
     max-width: 520px;
+}
+
+/* Control Bar (Flip Hint + Template Mode Toggle) */
+.card-controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: min(100%, 460px);
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
 .card-flip-hint {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-family: "DM Mono", monospace;
-    font-size: 12px;
-    color: var(--cyan);
-    background: rgba(67, 231, 255, 0.1);
-    border: 1px solid rgba(67, 231, 255, 0.28);
-    padding: 7px 16px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: #dfd7c5;
+    background: rgba(179, 56, 30, 0.18);
+    border: 1px solid rgba(179, 56, 30, 0.45);
+    padding: 7px 14px;
     border-radius: 9999px;
-    margin-bottom: 22px;
-    animation: hintPulse 3s ease-in-out infinite;
     user-select: none;
     cursor: pointer;
-    box-shadow: 0 0 20px rgba(67, 231, 255, 0.12);
+    transition: all 0.25s ease;
+    letter-spacing: 0.04em;
+}
+
+.card-flip-hint:hover {
+    background: rgba(179, 56, 30, 0.32);
+    border-color: #df744a;
+    color: #ffffff;
+    box-shadow: 0 0 16px rgba(223, 116, 74, 0.3);
 }
 
 .hint-icon {
-    font-size: 15px;
+    font-size: 14px;
     display: inline-block;
-    transition: transform 0.3s ease;
+    color: #df744a;
+    transition: transform 0.35s ease;
 }
 
-.card-3d-scene:hover .hint-icon {
+.card-flip-hint:hover .hint-icon {
     transform: rotate(180deg);
 }
 
-@keyframes hintPulse {
-    0%, 100% {
-        opacity: 0.85;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 1;
-        transform: scale(1.04);
-        box-shadow: 0 0 25px rgba(67, 231, 255, 0.25);
-    }
+.template-toggle-group {
+    display: inline-flex;
+    background: rgba(15, 17, 21, 0.85);
+    border: 1px solid rgba(212, 203, 184, 0.22);
+    border-radius: 9999px;
+    padding: 3px;
+    gap: 4px;
+}
+
+.template-toggle-btn {
+    background: transparent;
+    border: none;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: #9e917d;
+    padding: 5px 12px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.template-toggle-btn.active {
+    background: #b3381e;
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(179, 56, 30, 0.4);
+}
+
+/* 3D Scene & Perspective */
+.card-3d-scene {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1500px;
+    width: 100%;
 }
 
 .card-3d-wrapper {
     position: relative;
-    width: min(100%, 420px);
-    height: 640px;
+    width: min(100%, 460px);
+    height: 732px;
     transform-style: preserve-3d;
     cursor: pointer;
-    border-radius: 28px;
+    border-radius: 24px;
     outline: none;
+    box-shadow: 0 35px 90px rgba(0, 0, 0, 0.75), 0 0 45px rgba(179, 56, 30, 0.12);
 }
 
 .card-face {
@@ -1032,305 +1074,659 @@ h1 {
     inset: 0;
     width: 100%;
     height: 100%;
-    border-radius: 28px;
+    border-radius: 24px;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     overflow: hidden;
-    background: linear-gradient(155deg, rgba(30, 24, 62, 0.94) 0%, rgba(13, 16, 36, 0.98) 48%, rgba(12, 28, 50, 0.94) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 45px rgba(142, 107, 255, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    background: #0d0e11;
+    border: 2px solid rgba(212, 203, 184, 0.35);
+    user-select: none;
 }
 
-.card-inner-glow {
+/* Base Graphic Artwork Layers */
+.card-bg-layer {
     position: absolute;
-    inset: -30%;
-    background: linear-gradient(120deg, transparent 40%, rgba(255, 255, 255, 0.14) 50%, transparent 60%);
-    transform: rotate(15deg);
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     pointer-events: none;
+    z-index: 1;
 }
 
-/* Front Face */
+.card-front-bg {
+    background-image: url('/assets/template-front.png');
+}
+
+.card-back-bg {
+    background-image: url('/assets/template-back.png');
+}
+
+/* Front & Back Faces */
 .card-front {
     transform: rotateY(0deg);
 }
 
-.card-header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    z-index: 2;
+.card-back {
+    transform: rotateY(180deg);
 }
 
-.card-brand-label {
-    font-family: "DM Mono", monospace;
-    font-size: 13px;
-    color: var(--cyan);
-    letter-spacing: 0.18em;
+/* Dynamic Content Overlay */
+.card-content-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: auto;
+}
+
+/* ==================== FRONT FACE ELEMENTS ==================== */
+
+/* 1. Top Header */
+.front-top-header {
+    position: absolute;
+    top: 26px;
+    left: 88px;
+    right: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.header-brand-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.header-nexus-title {
+    font-family: "Roboto Slab", serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: #ede5d5;
+    letter-spacing: 0.08em;
+    margin: 0;
+    line-height: 1.1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.brand-cross {
+    color: #df744a;
+    font-weight: 400;
+    font-size: 18px;
+    margin-left: 2px;
+}
+
+.header-sanskrit-quote {
+    font-family: "Noto Sans Devanagari", sans-serif;
+    font-size: 11px;
+    color: #df744a;
+    margin: 4px 0 0;
+    letter-spacing: 0.04em;
     font-weight: 600;
 }
 
-.verified-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 9999px;
-    background: rgba(67, 231, 255, 0.12);
-    border: 1px solid rgba(67, 231, 255, 0.35);
-    color: #7ef5ff;
-    font-size: 12px;
-    font-weight: 500;
+.header-meta-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
 }
 
-.card-avatar-ring-outer {
+.meta-bharat {
+    font-family: "Noto Sans Devanagari", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #df744a;
+    line-height: 1;
+}
+
+.meta-verified {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: #ede5d5;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.meta-verified .red-dot {
+    color: #c8381e;
+    font-size: 10px;
+}
+
+.meta-team {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 9px;
+    color: #9e917d;
+    letter-spacing: 0.08em;
+}
+
+/* 2. Left Vertical Code Ribbon */
+.front-left-ribbon {
+    position: absolute;
+    top: 132px;
+    left: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.ribbon-label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 8px;
+    color: #8c8273;
+    letter-spacing: 0.22em;
+}
+
+.ribbon-id {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 15px;
+    color: #df744a;
+    letter-spacing: 0.16em;
+}
+
+.ribbon-motto {
+    position: absolute;
+    top: 130px;
+    left: -15px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 7.5px;
+    color: #70685c;
+    letter-spacing: 0.22em;
+    white-space: nowrap;
+}
+
+/* 3. Center Portrait Avatar */
+.front-avatar-container {
+    position: absolute;
+    top: 110px;
+    left: 150px;
+    width: 160px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.front-avatar-frame {
     width: 142px;
     height: 142px;
     border-radius: 50%;
-    margin: 14px auto 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #a78bfa, #38bdf8);
-    padding: 4px;
-    box-shadow: 0 0 32px rgba(56, 189, 248, 0.28);
-    position: relative;
-    z-index: 2;
-    flex-shrink: 0;
-}
-
-.card-avatar-ring-inner {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
     overflow: hidden;
-    background: #0f1228;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 4px solid rgba(255, 255, 255, 0.35);
+    background: #101216;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(0, 0, 0, 0.9);
 }
 
-.card-avatar-img {
+.front-avatar-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.card-avatar-fallback {
-    font-size: 48px;
-    font-weight: 700;
-    color: #fff;
-    font-family: "Space Grotesk", sans-serif;
-    background: linear-gradient(135deg, #bba8ff, #45e7ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.card-identity-block {
-    position: relative;
-    z-index: 2;
-    margin-top: 4px;
-}
-
-.card-badge-eyebrow {
-    color: var(--cyan);
-    font-family: "DM Mono", monospace;
-    font-size: 12px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    margin: 0 0 6px;
-    font-weight: 500;
-}
-
-.card-full-name {
-    font-size: clamp(34px, 6vw, 42px);
-    font-weight: 700;
-    margin: 0 0 6px;
-    letter-spacing: -0.04em;
-    color: #ffffff;
-    line-height: 1.05;
-}
-
-.card-role {
-    font-size: 19px;
-    color: #f1f3ff;
-    margin: 0 0 4px;
-    font-weight: 500;
-}
-
-.card-team {
-    font-size: 14px;
-    color: var(--muted);
-    margin: 0 0 6px;
-}
-
-.card-bio {
-    font-size: 13px;
-    color: #c0c5e3;
-    margin: 6px 0 0;
-    line-height: 1.45;
-    opacity: 0.92;
-}
-
-.card-skills-row {
+/* 4. Right Stencil Badge & Tiger Patch */
+.front-right-stencil {
+    position: absolute;
+    top: 220px;
+    right: 22px;
+    width: 38px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
-    position: relative;
-    z-index: 2;
-}
-
-.card-skill-pill {
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    background: rgba(0, 0, 0, 0.32);
-    color: #e2e6ff;
-    font-size: 12px;
-    padding: 5px 12px;
-    border-radius: 9999px;
-    font-family: "DM Mono", monospace;
-}
-
-.card-footer-row {
-    display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    font-family: "DM Mono", monospace;
-    font-size: 11px;
-    color: #8c92b8;
-    letter-spacing: 0.12em;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    padding-top: 14px;
-    position: relative;
-    z-index: 2;
+    gap: 14px;
 }
 
-/* Back Face */
-.card-back {
-    transform: rotateY(180deg);
-}
-
-.card-back-header {
-    position: relative;
-    z-index: 2;
-}
-
-.card-back-eyebrow {
-    color: var(--cyan);
-    font-family: "DM Mono", monospace;
+.stencil-symbol {
     font-size: 12px;
+    color: #df744a;
+    letter-spacing: 0.1em;
+}
+
+.stencil-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 10.5px;
     letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin: 0;
-    font-weight: 500;
+    color: #ede5d5;
+    line-height: 1.15;
 }
 
-.card-back-title {
-    font-size: 32px;
-    font-weight: 700;
-    margin: 4px 0 10px;
-    color: #ffffff;
-    letter-spacing: -0.03em;
+.front-tiger-patch {
+    position: absolute;
+    top: 432px;
+    right: 22px;
+    width: 124px;
+    height: 102px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
 }
 
-.card-back-links {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+.tiger-stamp-img {
     width: 100%;
-    position: relative;
-    z-index: 2;
+    height: 100%;
+    object-fit: cover;
 }
 
-.card-back-link-btn {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    padding: 10px 16px;
-    border-radius: 12px;
-    color: #edf0ff;
-    font-weight: 600;
-    font-size: 14px;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    cursor: pointer;
-}
-
-.card-back-link-btn:hover {
-    background: rgba(255, 255, 255, 0.13);
-    border-color: rgba(67, 231, 255, 0.45);
-    transform: translateX(3px);
-    color: #ffffff;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-}
-
-.card-back-link-btn .link-arrow {
-    font-size: 14px;
-    color: var(--cyan);
-}
-
-.card-back-no-links {
-    padding: 10px 14px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px dashed rgba(255, 255, 255, 0.14);
-    border-radius: 12px;
-    font-size: 13px;
-    color: var(--muted);
-    text-align: center;
-}
-
-.card-back-qr-container {
+/* 5. Identity Details */
+.front-identity-area {
+    position: absolute;
+    top: 346px;
+    left: 42px;
+    right: 156px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin: 12px 0 6px;
-    position: relative;
-    z-index: 2;
 }
 
-.card-back-qr-box {
-    background: #ffffff;
-    padding: 10px;
-    border-radius: 18px;
+.badge-tier-tag {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
-    border: 3px solid rgba(255, 255, 255, 0.85);
+    gap: 6px;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 13.5px;
+    letter-spacing: 0.16em;
+    color: #ede5d5;
+    background: #b3381e;
+    padding: 3px 10px;
+    border-radius: 4px;
+    align-self: flex-start;
 }
 
-.card-back-qr-caption {
-    color: var(--muted);
-    font-size: 12px;
-    margin: 8px 0 0;
-    text-align: center;
-    font-family: "DM Mono", monospace;
+.tier-dot {
+    color: #dfd7c5;
+    font-size: 9px;
+}
+
+.name-and-mandala-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.profile-hero-name {
+    font-family: "Oswald", "Roboto Slab", sans-serif;
+    font-size: clamp(26px, 5.8vw, 33px);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #ede5d5;
+    margin: 0;
+    line-height: 1.05;
+    text-transform: uppercase;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+}
+
+.profile-hindi-name {
+    font-family: "Noto Sans Devanagari", sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #df744a;
+    margin: 2px 0 0;
     letter-spacing: 0.04em;
 }
 
+.mandala-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    opacity: 0.85;
+}
+
+.mandala-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.role-and-team-block {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.role-bracket-row {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 17px;
+    color: #ede5d5;
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.role-bracket-row .bracket {
+    color: #9e917d;
+}
+
+.team-text {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 13.5px;
+    letter-spacing: 0.14em;
+    color: #c84b2c;
+    margin: 0;
+}
+
+.bio-description {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    line-height: 1.45;
+    color: #c0b7a8;
+    margin: 8px 0 0;
+    max-width: 230px;
+}
+
+/* 6. Lower Social Links & Mini QR Zone */
+.front-lower-grid {
+    position: absolute;
+    top: 554px;
+    left: 42px;
+    right: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.social-quad-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(14, 16, 20, 0.7);
+    border: 1px solid rgba(212, 203, 184, 0.2);
+    border-radius: 8px;
+    padding: 8px 14px;
+}
+
+.social-quad-btn {
+    color: #ede5d5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.social-quad-btn:hover {
+    color: #df744a;
+    transform: scale(1.15);
+}
+
+.social-icon-svg {
+    width: 19px;
+    height: 19px;
+}
+
+.quad-divider {
+    color: #df744a;
+    font-size: 12px;
+    font-weight: 300;
+}
+
+.front-mini-qr-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(14, 16, 20, 0.75);
+    border: 1px solid rgba(212, 203, 184, 0.22);
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+.mini-qr-frame {
+    background: #ffffff;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mini-qr-label-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.mini-qr-label-col .signal-icon {
+    font-size: 11px;
+    color: #df744a;
+}
+
+.mini-qr-text {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 8px;
+    color: #9e917d;
+    line-height: 1.2;
+    letter-spacing: 0.05em;
+}
+
+/* 7. Front Footer */
+.front-footer-strip {
+    position: absolute;
+    bottom: 18px;
+    left: 36px;
+    right: 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 9px;
+    color: #8c8273;
+    letter-spacing: 0.12em;
+}
+
+.footer-left-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nfc-signal-badge {
+    color: #df744a;
+    font-size: 11px;
+}
+
+.footer-cross {
+    color: #df744a;
+}
+
+.footer-center-hint {
+    letter-spacing: 0.14em;
+    color: #c0b7a8;
+}
+
+.footer-namaste {
+    font-family: "Noto Sans Devanagari", sans-serif;
+    font-size: 11px;
+    color: #df744a;
+    font-weight: 700;
+}
+
+/* ==================== BACK FACE ELEMENTS ==================== */
+
+.back-top-banner {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.back-banner-caption {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 9px;
+    color: #c0b7a8;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+}
+
+.back-qr-zone {
+    position: absolute;
+    top: 86px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.back-large-qr-frame {
+    position: relative;
+    width: 258px;
+    height: 258px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(14, 16, 20, 0.85);
+    border: 1px solid rgba(212, 203, 184, 0.3);
+    border-radius: 12px;
+}
+
+.qr-corner-bracket {
+    position: absolute;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 18px;
+    color: #df744a;
+    line-height: 1;
+}
+
+.qr-corner-bracket.tl { top: -2px; left: 4px; }
+.qr-corner-bracket.tr { top: -2px; right: 4px; }
+.qr-corner-bracket.bl { bottom: -2px; left: 4px; }
+.qr-corner-bracket.br { bottom: -2px; right: 4px; }
+
+.qr-code-white-mat {
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.back-qr-caption {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 9px;
+    color: #9e917d;
+    margin: 14px 0 0;
+    letter-spacing: 0.12em;
+    text-align: center;
+}
+
+.back-secondary-box {
+    position: absolute;
+    top: 472px;
+    left: 46px;
+    right: 46px;
+    background: rgba(14, 16, 20, 0.8);
+    border: 1px solid rgba(212, 203, 184, 0.22);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.secondary-row-top {
+    display: flex;
+    justify-content: space-between;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 9px;
+    color: #9e917d;
+    letter-spacing: 0.1em;
+}
+
+.secondary-id-badge {
+    color: #df744a;
+    font-weight: 600;
+}
+
+.secondary-url-text {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: #ede5d5;
+    word-break: break-all;
+    letter-spacing: 0.04em;
+}
+
+.back-social-bar {
+    position: absolute;
+    top: 554px;
+    left: 46px;
+    right: 46px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: rgba(14, 16, 20, 0.85);
+    border: 1px solid rgba(212, 203, 184, 0.25);
+    border-radius: 8px;
+    padding: 10px 18px;
+}
+
+.back-social-btn {
+    color: #ede5d5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.back-social-btn:hover {
+    color: #df744a;
+    transform: scale(1.2);
+}
+
+.back-btn-svg {
+    width: 20px;
+    height: 20px;
+}
+
+.back-btn-cross {
+    color: #df744a;
+    font-size: 13px;
+    font-weight: 300;
+}
+
+.back-footer-strip {
+    position: absolute;
+    bottom: 22px;
+    left: 46px;
+    right: 46px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 9px;
+    color: #8c8273;
+    letter-spacing: 0.14em;
+}
+
+.footer-hint-center {
+    color: #df744a;
+    font-weight: 600;
+}
+
+/* Mobile Responsiveness */
 @media (max-width: 480px) {
     .card-3d-wrapper {
-        height: 600px;
+        height: 640px;
     }
-    .card-face {
-        padding: 22px;
+    .card-content-overlay {
+        transform: scale(0.88);
+        transform-origin: top center;
     }
-    .card-avatar-ring-outer {
-        width: 120px;
-        height: 120px;
-    }
-    .card-full-name {
-        font-size: 32px;
-    }
-    .card-back-title {
-        font-size: 28px;
+    .card-controls-bar {
+        flex-direction: column;
+        align-items: center;
     }
 }
+
 
