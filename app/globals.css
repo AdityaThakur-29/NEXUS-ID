@@ -954,3 +954,383 @@ h1 {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 16px;
 }
+
+/* ==========================================================================
+   3D NFC Digital Profile Card (Front & Back Interactive Flip)
+   ========================================================================== */
+
+.profile-3d-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.card-3d-scene {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    perspective: 1400px;
+    padding: 20px 16px 60px;
+    width: 100%;
+    max-width: 520px;
+}
+
+.card-flip-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "DM Mono", monospace;
+    font-size: 12px;
+    color: var(--cyan);
+    background: rgba(67, 231, 255, 0.1);
+    border: 1px solid rgba(67, 231, 255, 0.28);
+    padding: 7px 16px;
+    border-radius: 9999px;
+    margin-bottom: 22px;
+    animation: hintPulse 3s ease-in-out infinite;
+    user-select: none;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(67, 231, 255, 0.12);
+}
+
+.hint-icon {
+    font-size: 15px;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.card-3d-scene:hover .hint-icon {
+    transform: rotate(180deg);
+}
+
+@keyframes hintPulse {
+    0%, 100% {
+        opacity: 0.85;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.04);
+        box-shadow: 0 0 25px rgba(67, 231, 255, 0.25);
+    }
+}
+
+.card-3d-wrapper {
+    position: relative;
+    width: min(100%, 420px);
+    height: 640px;
+    transform-style: preserve-3d;
+    cursor: pointer;
+    border-radius: 28px;
+    outline: none;
+}
+
+.card-face {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 28px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    background: linear-gradient(155deg, rgba(30, 24, 62, 0.94) 0%, rgba(13, 16, 36, 0.98) 48%, rgba(12, 28, 50, 0.94) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 45px rgba(142, 107, 255, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.card-inner-glow {
+    position: absolute;
+    inset: -30%;
+    background: linear-gradient(120deg, transparent 40%, rgba(255, 255, 255, 0.14) 50%, transparent 60%);
+    transform: rotate(15deg);
+    pointer-events: none;
+}
+
+/* Front Face */
+.card-front {
+    transform: rotateY(0deg);
+}
+
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.card-brand-label {
+    font-family: "DM Mono", monospace;
+    font-size: 13px;
+    color: var(--cyan);
+    letter-spacing: 0.18em;
+    font-weight: 600;
+}
+
+.verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    background: rgba(67, 231, 255, 0.12);
+    border: 1px solid rgba(67, 231, 255, 0.35);
+    color: #7ef5ff;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.card-avatar-ring-outer {
+    width: 142px;
+    height: 142px;
+    border-radius: 50%;
+    margin: 14px auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #a78bfa, #38bdf8);
+    padding: 4px;
+    box-shadow: 0 0 32px rgba(56, 189, 248, 0.28);
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+}
+
+.card-avatar-ring-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #0f1228;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid rgba(255, 255, 255, 0.35);
+}
+
+.card-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-avatar-fallback {
+    font-size: 48px;
+    font-weight: 700;
+    color: #fff;
+    font-family: "Space Grotesk", sans-serif;
+    background: linear-gradient(135deg, #bba8ff, #45e7ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.card-identity-block {
+    position: relative;
+    z-index: 2;
+    margin-top: 4px;
+}
+
+.card-badge-eyebrow {
+    color: var(--cyan);
+    font-family: "DM Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin: 0 0 6px;
+    font-weight: 500;
+}
+
+.card-full-name {
+    font-size: clamp(34px, 6vw, 42px);
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: -0.04em;
+    color: #ffffff;
+    line-height: 1.05;
+}
+
+.card-role {
+    font-size: 19px;
+    color: #f1f3ff;
+    margin: 0 0 4px;
+    font-weight: 500;
+}
+
+.card-team {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0 0 6px;
+}
+
+.card-bio {
+    font-size: 13px;
+    color: #c0c5e3;
+    margin: 6px 0 0;
+    line-height: 1.45;
+    opacity: 0.92;
+}
+
+.card-skills-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+    position: relative;
+    z-index: 2;
+}
+
+.card-skill-pill {
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(0, 0, 0, 0.32);
+    color: #e2e6ff;
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 9999px;
+    font-family: "DM Mono", monospace;
+}
+
+.card-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    color: #8c92b8;
+    letter-spacing: 0.12em;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 14px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Back Face */
+.card-back {
+    transform: rotateY(180deg);
+}
+
+.card-back-header {
+    position: relative;
+    z-index: 2;
+}
+
+.card-back-eyebrow {
+    color: var(--cyan);
+    font-family: "DM Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin: 0;
+    font-weight: 500;
+}
+
+.card-back-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 4px 0 10px;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+}
+
+.card-back-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.card-back-link-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 10px 16px;
+    border-radius: 12px;
+    color: #edf0ff;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.card-back-link-btn:hover {
+    background: rgba(255, 255, 255, 0.13);
+    border-color: rgba(67, 231, 255, 0.45);
+    transform: translateX(3px);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.card-back-link-btn .link-arrow {
+    font-size: 14px;
+    color: var(--cyan);
+}
+
+.card-back-no-links {
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px dashed rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+}
+
+.card-back-qr-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 12px 0 6px;
+    position: relative;
+    z-index: 2;
+}
+
+.card-back-qr-box {
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    border: 3px solid rgba(255, 255, 255, 0.85);
+}
+
+.card-back-qr-caption {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 8px 0 0;
+    text-align: center;
+    font-family: "DM Mono", monospace;
+    letter-spacing: 0.04em;
+}
+
+@media (max-width: 480px) {
+    .card-3d-wrapper {
+        height: 600px;
+    }
+    .card-face {
+        padding: 22px;
+    }
+    .card-avatar-ring-outer {
+        width: 120px;
+        height: 120px;
+    }
+    .card-full-name {
+        font-size: 32px;
+    }
+    .card-back-title {
+        font-size: 28px;
+    }
+}
+
