@@ -10,6 +10,9 @@ a { color:inherit; text-decoration:none; }
 .brand { font-family:"DM Mono",monospace; font-size:14px; letter-spacing:.14em; }
 .button { border:1px solid rgba(255,255,255,.19); background:rgba(255,255,255,.08); padding:11px 15px; border-radius:12px; color:white; font-weight:600; cursor:pointer; }
 .button:hover { background:rgba(255,255,255,.16); }.button.primary { background:linear-gradient(135deg,var(--violet),#4e87ff); border:0; }
+.button.danger { background:rgba(255,75,100,.18); border:1px solid rgba(255,75,100,.42); color:#ffb7c3; }
+.button.danger:hover { background:rgba(255,75,100,.32); border-color:#ff4b64; }
+
 .hero { min-height:calc(100vh - 82px); display:grid; place-items:center; text-align:center; padding:44px 0 82px; }
 .eyebrow,.id { color:var(--cyan); font:500 12px "DM Mono",monospace; letter-spacing:.15em; text-transform:uppercase; }
 h1 { font-size:clamp(46px,9vw,100px); line-height:.92; margin:20px 0; letter-spacing:-.07em; }.lead { color:var(--muted); max-width:580px; margin:0 auto 28px; font-size:18px; line-height:1.5; }

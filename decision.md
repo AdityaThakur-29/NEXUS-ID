@@ -286,3 +286,29 @@ Render a dynamic `<QRCodeSVG />` component on the profile page encoding the cano
 ### Consequences
 - **Positive**: Universal peer-to-peer sharing (tap or scan); zero extra physical printing costs; crisp vector scaling across all screen densities.
 - **Negative**: Requires minimal client JS execution to render the SVG.
+
+---
+
+## ADR-010: Profile Lifecycle & Soft Deactivation vs Hard Deletion
+
+### Context
+In event badge systems, cards that have already been physically issued should rarely be completely deleted because physical badges with immutable URLs (`/@ID`) would result in abrupt 404 errors. However, organizers need the ability to prepare profiles in draft mode before publishing, soft-disable lost badges, and completely purge erroneous entries when strictly necessary.
+
+### Alternatives Considered
+1. **Hard Delete Only**:
+   - *Pros*: Simple database operations.
+   - *Cons*: Dangerous. Physical cards in attendee hands become dead links with no context.
+2. **Soft Deactivation Only (No Delete API)**:
+   - *Pros*: Protects against broken badges.
+   - *Cons*: Clutters database with test or mistyped records that organizers can never purge.
+
+### Decision
+Implement a multi-stage lifecycle:
+1. **Draft**: Newly created profiles can be saved as `draft` so organizers can prepare credentials before badge distribution.
+2. **Active**: Publicly visible when tapped or scanned.
+3. **Disabled**: Soft-deactivation state showing a branded "Card inactive / Profile unavailable" screen when tapped.
+4. **Delete**: Protected permanent deletion supported via authenticated `DELETE /api/admin/profiles/[id]` with UI confirmation dialog and dedicated Supabase RLS delete policies for admin/staff roles.
+
+### Consequences
+- **Positive**: Complete administrative control; safe default (soft disable) with escape hatch (hard delete when necessary).
+

@@ -1,5 +1,142 @@
 "use client";
+
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Profile } from "@/lib/types";
-export function EditProfileForm({profile}:{profile:Profile}){const router=useRouter();const[message,setMessage]=useState("");const[saving,setSaving]=useState(false);async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setSaving(true);const f=new FormData(e.currentTarget);const data=Object.fromEntries(f);const skills=String(data.skills||"").split(",").map(v=>v.trim()).filter(Boolean);const r=await fetch(`/api/admin/profiles/${profile.id}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({...data,skills})});const b=await r.json();if(!r.ok){setMessage(b.error||"Could not update profile.");setSaving(false);return}router.push("/admin");router.refresh()}return <form className="profile-form" onSubmit={submit}><label>Full name<input name="full_name" required defaultValue={profile.full_name}/></label><label>Public ID<input disabled value={profile.public_id}/><small>Public IDs stay fixed after NFC cards are issued.</small></label><label>Role<input name="role" required defaultValue={profile.role}/></label><label>Status<select name="status" defaultValue={profile.status}><option value="active">Active</option><option value="draft">Draft</option><option value="disabled">Disabled — hide public card</option></select></label><label>Organization<input name="organization" defaultValue={profile.organization||""}/></label><label>Team<input name="team" defaultValue={profile.team||""}/></label><label>Badge tier<select name="badge_tier" defaultValue={profile.badge_tier}><option>Participant</option><option>Organizer</option><option>Speaker</option><option>Volunteer</option><option>Guest</option></select></label><label className="wide">Bio<textarea name="bio" rows={4} defaultValue={profile.bio||""}/></label><label className="wide">Skills<input name="skills" defaultValue={profile.skills.join(", ")}/></label><label>LinkedIn<input name="linkedin_url" type="url" defaultValue={profile.linkedin_url||""}/></label><label>GitHub<input name="github_url" type="url" defaultValue={profile.github_url||""}/></label><label>Website<input name="website_url" type="url" defaultValue={profile.website_url||""}/></label><label>Instagram<input name="instagram_url" type="url" defaultValue={profile.instagram_url||""}/></label>{message&&<p className="wide form-error">{message}</p>}<div className="wide form-actions"><button className="button primary" disabled={saving}>{saving?"Saving…":"Save changes"}</button></div></form>}
+
+export function EditProfileForm({ profile }: { profile: Profile }) {
+  const router = useRouter();
+  const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSaving(true);
+    setMessage("");
+    const f = new FormData(e.currentTarget);
+    const data = Object.fromEntries(f);
+    const skills = String(data.skills || "")
+      .split(",")
+      .map((v) => v.trim())
+      .filter(Boolean);
+
+    const r = await fetch(`/api/admin/profiles/${profile.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...data, skills }),
+    });
+
+    const b = await r.json();
+    if (!r.ok) {
+      setMessage(b.error || "Could not update profile.");
+      setSaving(false);
+      return;
+    }
+    router.push("/admin");
+    router.refresh();
+  }
+
+  async function deleteProfile() {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete profile "${profile.full_name}" (${profile.public_id})? This action cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    setDeleting(true);
+    setMessage("");
+    const r = await fetch(`/api/admin/profiles/${profile.id}`, {
+      method: "DELETE",
+    });
+    const b = await r.json();
+    if (!r.ok) {
+      setMessage(b.error || "Could not delete profile.");
+      setDeleting(false);
+      return;
+    }
+    router.push("/admin");
+    router.refresh();
+  }
+
+  return (
+    <form className="profile-form" onSubmit={submit}>
+      <label>
+        Full name
+        <input name="full_name" required defaultValue={profile.full_name} />
+      </label>
+      <label>
+        Public ID
+        <input disabled value={profile.public_id} />
+        <small>Public IDs stay fixed after NFC cards are issued.</small>
+      </label>
+      <label>
+        Role
+        <input name="role" required defaultValue={profile.role} />
+      </label>
+      <label>
+        Status
+        <select name="status" defaultValue={profile.status}>
+          <option value="active">Active</option>
+          <option value="draft">Draft</option>
+          <option value="disabled">Disabled — hide public card</option>
+        </select>
+      </label>
+      <label>
+        Organization
+        <input name="organization" defaultValue={profile.organization || ""} />
+      </label>
+      <label>
+        Team
+        <input name="team" defaultValue={profile.team || ""} />
+      </label>
+      <label>
+        Badge tier
+        <select name="badge_tier" defaultValue={profile.badge_tier}>
+          <option>Participant</option>
+          <option>Organizer</option>
+          <option>Speaker</option>
+          <option>Volunteer</option>
+          <option>Guest</option>
+        </select>
+      </label>
+      <label className="wide">
+        Bio
+        <textarea name="bio" rows={4} defaultValue={profile.bio || ""} />
+      </label>
+      <label className="wide">
+        Skills
+        <input name="skills" defaultValue={profile.skills.join(", ")} />
+      </label>
+      <label>
+        LinkedIn
+        <input name="linkedin_url" type="url" defaultValue={profile.linkedin_url || ""} />
+      </label>
+      <label>
+        GitHub
+        <input name="github_url" type="url" defaultValue={profile.github_url || ""} />
+      </label>
+      <label>
+        Website
+        <input name="website_url" type="url" defaultValue={profile.website_url || ""} />
+      </label>
+      <label>
+        Instagram
+        <input name="instagram_url" type="url" defaultValue={profile.instagram_url || ""} />
+      </label>
+      {message && <p className="wide form-error">{message}</p>}
+      <div className="wide form-actions" style={{ justifyContent: "space-between" }}>
+        <button className="button primary" disabled={saving || deleting}>
+          {saving ? "Saving…" : "Save changes"}
+        </button>
+        <button
+          type="button"
+          className="button danger"
+          disabled={saving || deleting}
+          onClick={deleteProfile}
+        >
+          {deleting ? "Deleting…" : "Delete profile"}
+        </button>
+      </div>
+    </form>
+  );
+}

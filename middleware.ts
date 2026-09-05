@@ -5,7 +5,10 @@ import type { CookieOptions } from "@supabase/ssr";
 // Keep NFC URLs short and permanent: /@AD001. This avoids using an @-prefixed
 // folder (reserved by Next.js) or a dynamic app-route segment.
 export function middleware(request: NextRequest) {
-  const response = NextResponse.next({ request });
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", request.nextUrl.pathname);
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
+
   if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,

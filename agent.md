@@ -62,24 +62,26 @@ Nexus ID decouples physical NFC hardware from the digital identity layer:
 │   ├── profile/
 │   │   └── page.tsx                 # Public dynamic badge view (renders 3D card + QR fallback)
 │   ├── admin/
-│   │   ├── layout.tsx               # Server-side RBAC gatekeeper (redirects unauthorized users)
+│   │   ├── layout.tsx               # Server-side RBAC gatekeeper (redirects unauthorized users to /admin/login)
 │   │   ├── page.tsx                 # Admin dashboard: attendee directory table with actions
+│   │   ├── login/
+│   │   │   └── page.tsx             # Dedicated /admin/login authentication screen
 │   │   └── profiles/
 │   │       ├── new/
-│   │       │   └── page.tsx         # Page hosting <NewProfileForm />
+│   │       │   └── page.tsx         # Page hosting <NewProfileForm /> (with ID generator and Draft/Active status)
 │   │       └── [id]/
 │   │           └── edit/
-│   │               └── page.tsx     # Page hosting <EditProfileForm profile={...} />
+│   │               └── page.tsx     # Page hosting <EditProfileForm /> (with Delete action and status selector)
 │   └── api/
 │       └── admin/
 │           └── profiles/
-│               ├── route.ts         # POST: Create profile (Zod validation + auth check)
+│               ├── route.ts         # POST: Create profile (draft or active, Zod validation + auth check)
 │               └── [id]/
-│                   └── route.ts     # PATCH: Update profile (Zod validation + auth check)
+│                   └── route.ts     # PATCH & DELETE: Update/Delete profile (Zod validation + auth check)
 │
 ├── components/                      # Shared Client Components
-│   ├── new-profile-form.tsx         # Client form for creating new attendee records
-│   └── edit-profile-form.tsx        # Client form for editing existing attendee records
+│   ├── new-profile-form.tsx         # Form for creating attendee records (auto ID generator + draft/active)
+│   └── edit-profile-form.tsx        # Form for editing & deleting attendee records (with confirmation)
 │
 ├── lib/                             # Core utilities and data layers
 │   ├── types.ts                     # TypeScript definitions for Profile and ProfileStatus
@@ -91,7 +93,8 @@ Nexus ID decouples physical NFC hardware from the digital identity layer:
 │
 └── supabase/                        # Database Schemas & Migrations
     ├── schema.sql                   # Profiles table, enum, public read RLS policy, demo record
-    └── admin_setup.sql              # admin_roles table, staff/admin RLS policies for CRUD
+    └── admin_setup.sql              # admin_roles table, staff/admin RLS policies for CRUD (SELECT, INSERT, UPDATE, DELETE)
+
 ```
 
 ---

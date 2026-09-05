@@ -29,6 +29,12 @@ for update to authenticated using (
   exists (select 1 from public.admin_roles where user_id = auth.uid() and role in ('admin', 'staff'))
 );
 
+create policy "admins can delete profiles" on public.profiles
+for delete to authenticated using (
+  exists (select 1 from public.admin_roles where user_id = auth.uid() and role in ('admin', 'staff'))
+);
+
+
 -- After creating your user at /login, replace YOUR_EMAIL and run this once.
 -- insert into public.admin_roles (user_id, role)
 -- select id, 'admin' from auth.users where email = 'YOUR_EMAIL'
