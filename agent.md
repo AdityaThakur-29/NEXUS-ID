@@ -165,13 +165,24 @@ export async function getProfile(publicId: string): Promise<Profile | null> {
 1. **`public.profiles`**:
    - `id`: UUID Primary Key (`gen_random_uuid()`).
    - `public_id`: Unique text constraint (`check (public_id ~ '^[A-Z0-9_-]{3,20}$')`).
-   - `full_name`, `role`, `organization`, `team`, `bio` (max 500 chars), `photo_url`.
+   - `full_name`: Text (e.g. "Priya Sharma").
+   - `role`: Text constrained to the 5 designated team roles:
+     - `Chairperson`
+     - `Vice Chairperson`
+     - `Core Member`
+     - `Team Head` (paired with `team`/Department specification, e.g. Technical Team, PR Team, Documentation Team)
+     - `Member`
+   - `organization`: Text (defaults to "Nexus ID").
+   - `team`: Text (e.g. "Technical Team", "PR Team", "Documentation Team", "Design Team").
+   - `bio`: Text (max 500 chars).
+   - `photo_url`: Text (supports Base64 data URLs or uploaded image links).
    - `skills`: `text[]` default `{}`.
-   - `github_url`, `linkedin_url`, `website_url`, `instagram_url`.
-   - `badge_tier`: Text (e.g. `'Participant'`, `'Organizer'`, `'Speaker'`, `'Volunteer'`, `'Guest'`).
+   - `github_url`, `linkedin_url`, `website_url`, `instagram_url` (supports Instagram / X).
+   - `badge_tier`: Text (defaults to the assigned `role`).
    - `status`: Enum `public.profile_status ('draft', 'active', 'disabled')`.
    - `is_verified`: Boolean default `true`.
    - `created_at`, `updated_at`: Timestamps.
+
 
 2. **`public.admin_roles`**:
    - `user_id`: UUID references `auth.users(id)` ON DELETE CASCADE.

@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createSupabaseAuthClient } from "@/lib/supabase/server";
+import { TEAM_ROLES } from "@/lib/types";
 
 const schema = z.object({
   full_name: z.string().trim().min(2).max(100),
-  role: z.string().trim().min(2).max(100),
+  role: z.enum(TEAM_ROLES),
   organization: z.string().trim().max(120).optional(),
   team: z.string().trim().max(120).optional(),
-  badge_tier: z.string().trim().min(2).max(50),
+  badge_tier: z.string().trim().max(50).optional(),
   bio: z.string().trim().max(500).optional(),
+  photo_url: z.string().optional(),
   skills: z.array(z.string().trim().min(1).max(40)).max(15),
   linkedin_url: z.string().url().optional().or(z.literal("")),
   github_url: z.string().url().optional().or(z.literal("")),
@@ -33,7 +35,9 @@ export async function PATCH(
     .from("profiles")
     .update({
       ...value,
-      organization: value.organization || null,
+      badge_tier: value.badge_tier || value.role,
+      photo_url: value.photo_url || null,
+      organization: value.organization || "Nexus ID",
       team: value.team || null,
       bio: value.bio || null,
       linkedin_url: value.linkedin_url || null,

@@ -1,5 +1,26 @@
 export type ProfileStatus = "draft" | "active" | "disabled";
 
+export const TEAM_ROLES = [
+  "Chairperson",
+  "Vice Chairperson",
+  "Core Member",
+  "Team Head",
+  "Member",
+] as const;
+
+export type TeamRole = (typeof TEAM_ROLES)[number];
+
+export const COMMON_TEAMS = [
+  "Technical Team",
+  "PR Team",
+  "Documentation Team",
+  "Design Team",
+  "Operations Team",
+  "Sponsorship Team",
+  "Logistics Team",
+  "Media Team",
+] as const;
+
 export type Profile = {
   id: string;
   public_id: string;

@@ -1,12 +1,17 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { COMMON_TEAMS, TEAM_ROLES, TeamRole } from "@/lib/types";
 
 export function NewProfileForm() {
   const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [publicId, setPublicId] = useState("");
+  const [role, setRole] = useState<TeamRole>("Member");
+  const [team, setTeam] = useState("");
+  const [photoUrl, setPhotoUrl] = useState("");
+  const [skillsText, setSkillsText] = useState("");
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -21,21 +26,52 @@ export function NewProfileForm() {
     setPublicId(`${prefix}${num}`);
   }
 
+  function handlePhotoUpload(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      setMessage("Image file size must be less than 2MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPhotoUrl(reader.result as string);
+      setMessage("");
+    };
+    reader.readAsDataURL(file);
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSaving(true);
     setMessage("");
+
     const form = new FormData(event.currentTarget);
     const data = Object.fromEntries(form);
-    const skills = String(data.skills || "")
+    const skills = skillsText
       .split(",")
       .map((v) => v.trim())
       .filter(Boolean);
 
+    const payload = {
+      full_name: fullName,
+      public_id: publicId || String(data.public_id || ""),
+      role,
+      team: team || null,
+      photo_url: photoUrl || null,
+      bio: String(data.bio || "").trim() || null,
+      skills,
+      github_url: String(data.github_url || "").trim() || null,
+      linkedin_url: String(data.linkedin_url || "").trim() || null,
+      instagram_url: String(data.instagram_url || "").trim() || null,
+      website_url: String(data.website_url || "").trim() || null,
+      status: data.status || "active",
+    };
+
     const result = await fetch("/api/admin/profiles", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...data, public_id: publicId || data.public_id, skills }),
+      body: JSON.stringify(payload),
     });
 
     const body = await result.json();
@@ -48,10 +84,16 @@ export function NewProfileForm() {
     router.refresh();
   }
 
+  const skillsList = skillsText
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
   return (
     <form className="profile-form" onSubmit={submit}>
+      {/* Full Name */}
       <label>
-        Full name
+        Full Name
         <input
           name="full_name"
           required
@@ -63,8 +105,10 @@ export function NewProfileForm() {
           }}
         />
       </label>
+
+      {/* Public ID for NFC Card */}
       <label>
-        Public ID
+        Public ID (NFC Identifier)
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <input
             name="public_id"
@@ -79,72 +123,170 @@ export function NewProfileForm() {
             className="button"
             style={{ whiteSpace: "nowrap", padding: "10px 12px", fontSize: "12px" }}
             onClick={() => generateId()}
-            title="Auto-generate a unique ID from name initials"
+            title="Auto-generate from name initials"
           >
             ⚡ Generate
           </button>
         </div>
         <small>NFC URL: /@{publicId || "ID"}</small>
       </label>
-      <label>
-        Role / designation
-        <input name="role" required placeholder="e.g. Design Team" />
-      </label>
-      <label>
-        Status
-        <select name="status" defaultValue="active">
-          <option value="active">Active (Visible on public card)</option>
-          <option value="draft">Draft (Private until published)</option>
-        </select>
-      </label>
-      <label>
-        Organization
-        <input name="organization" placeholder="e.g. Nexus Event 2026" />
-      </label>
-      <label>
-        Team
-        <input name="team" placeholder="e.g. Experience Lab" />
-      </label>
-      <label>
-        Badge tier
-        <select name="badge_tier" defaultValue="Participant">
-          <option>Participant</option>
-          <option>Organizer</option>
-          <option>Speaker</option>
-          <option>Volunteer</option>
-          <option>Guest</option>
-        </select>
-      </label>
+
+      {/* Profile Photo Upload */}
       <label className="wide">
-        Short bio
+        Profile Photo
+        <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
+          {photoUrl ? (
+            <div
+              style={{
+                width: "64px",
+                height: "64px",
+                borderRadius: "50%",
+                overflow: "hidden",
+                border: "2px solid var(--cyan)",
+                flexShrink: 0,
+              }}
+            >
+              <img
+                src={photoUrl}
+                alt="Preview"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            </div>
+          ) : (
+            <div
+              style={{
+                width: "64px",
+                height: "64px",
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.08)",
+                border: "1px dashed rgba(255,255,255,0.2)",
+                display: "grid",
+                placeItems: "center",
+                color: "var(--muted)",
+                fontSize: "12px",
+                flexShrink: 0,
+              }}
+            >
+              Photo
+            </div>
+          )}
+          <div style={{ flex: 1, display: "grid", gap: "6px" }}>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoUpload}
+              style={{ fontSize: "13px" }}
+            />
+            {photoUrl && (
+              <button
+                type="button"
+                className="button danger"
+                style={{ width: "max-content", padding: "4px 10px", fontSize: "11px" }}
+                onClick={() => setPhotoUrl("")}
+              >
+                Remove Photo
+              </button>
+            )}
+            <small>Upload JPG, PNG or WEBP (max 2MB)</small>
+          </div>
+        </div>
+      </label>
+
+      {/* Role Dropdown */}
+      <label>
+        Role
+        <select
+          name="role"
+          value={role}
+          onChange={(e) => setRole(e.target.value as TeamRole)}
+        >
+          {TEAM_ROLES.map((r) => (
+            <option key={r} value={r}>
+              {r}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      {/* Department / Team Field */}
+      <label>
+        Department / Team {role === "Team Head" && <span style={{ color: "var(--cyan)" }}>* (Required for Head)</span>}
+        <input
+          name="team"
+          list="team-options"
+          required={role === "Team Head"}
+          placeholder={role === "Team Head" ? "e.g. Technical Team, PR Team" : "e.g. Technical Team (optional)"}
+          value={team}
+          onChange={(e) => setTeam(e.target.value)}
+        />
+        <datalist id="team-options">
+          {COMMON_TEAMS.map((t) => (
+            <option key={t} value={t} />
+          ))}
+        </datalist>
+        <small>{role === "Team Head" ? "Specify which department/team this head leads" : "Choose or type a department"}</small>
+      </label>
+
+      {/* Profile Status */}
+      <label>
+        Profile Status
+        <select name="status" defaultValue="active">
+          <option value="active">Active (Card is live)</option>
+          <option value="disabled">Disabled (Card is hidden/inactive)</option>
+        </select>
+      </label>
+
+      {/* Short Bio */}
+      <label className="wide">
+        Short Bio
         <textarea
           name="bio"
           placeholder="A short introduction for the digital ID card."
-          rows={4}
+          rows={3}
         />
       </label>
+
+      {/* Skills */}
       <label className="wide">
         Skills
-        <input name="skills" placeholder="Next.js, Design, NFC" />
+        <input
+          name="skills"
+          placeholder="Next.js, NFC, Creative Tech, Public Relations"
+          value={skillsText}
+          onChange={(e) => setSkillsText(e.target.value)}
+        />
         <small>Separate skills with commas.</small>
+        {skillsList.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px" }}>
+            {skillsList.map((skill) => (
+              <span className="chip" key={skill} style={{ fontSize: "11px", padding: "4px 8px" }}>
+                {skill}
+              </span>
+            ))}
+          </div>
+        )}
+      </label>
+
+      {/* Social Links */}
+      <label>
+        GitHub
+        <input name="github_url" type="url" placeholder="https://github.com/username" />
       </label>
       <label>
-        LinkedIn URL
-        <input name="linkedin_url" type="url" placeholder="https://linkedin.com/in/..." />
+        LinkedIn
+        <input name="linkedin_url" type="url" placeholder="https://linkedin.com/in/username" />
       </label>
       <label>
-        GitHub URL
-        <input name="github_url" type="url" placeholder="https://github.com/..." />
+        Instagram / X
+        <input name="instagram_url" type="url" placeholder="https://instagram.com/... or https://x.com/..." />
       </label>
       <label>
-        Website URL
-        <input name="website_url" type="url" placeholder="https://..." />
+        Personal Website
+        <input name="website_url" type="url" placeholder="https://yourwebsite.com" />
       </label>
-      <label>
-        Instagram URL
-        <input name="instagram_url" type="url" placeholder="https://instagram.com/..." />
-      </label>
+
       {message && <p className="wide form-error">{message}</p>}
+
       <div className="wide form-actions">
         <button className="button primary" disabled={saving}>
           {saving ? "Saving…" : "Save profile"}
