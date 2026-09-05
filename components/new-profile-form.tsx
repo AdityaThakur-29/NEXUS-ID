@@ -1,8 +1,9 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { COMMON_TEAMS, TEAM_ROLES, TeamRole } from "@/lib/types";
+import { PhotoEditor } from "@/components/photo-editor";
 
 export function NewProfileForm() {
   const router = useRouter();
@@ -26,20 +27,6 @@ export function NewProfileForm() {
     setPublicId(`${prefix}${num}`);
   }
 
-  function handlePhotoUpload(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      setMessage("Image file size must be less than 2MB.");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => {
-      setPhotoUrl(reader.result as string);
-      setMessage("");
-    };
-    reader.readAsDataURL(file);
-  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -131,66 +118,12 @@ export function NewProfileForm() {
         <small>NFC URL: /@{publicId || "ID"}</small>
       </label>
 
-      {/* Profile Photo Upload */}
+      {/* Profile Photo: URL + Crop/Pan/Zoom Editor */}
       <label className="wide">
         Profile Photo
-        <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
-          {photoUrl ? (
-            <div
-              style={{
-                width: "64px",
-                height: "64px",
-                borderRadius: "50%",
-                overflow: "hidden",
-                border: "2px solid var(--cyan)",
-                flexShrink: 0,
-              }}
-            >
-              <img
-                src={photoUrl}
-                alt="Preview"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            </div>
-          ) : (
-            <div
-              style={{
-                width: "64px",
-                height: "64px",
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.08)",
-                border: "1px dashed rgba(255,255,255,0.2)",
-                display: "grid",
-                placeItems: "center",
-                color: "var(--muted)",
-                fontSize: "12px",
-                flexShrink: 0,
-              }}
-            >
-              Photo
-            </div>
-          )}
-          <div style={{ flex: 1, display: "grid", gap: "6px" }}>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handlePhotoUpload}
-              style={{ fontSize: "13px" }}
-            />
-            {photoUrl && (
-              <button
-                type="button"
-                className="button danger"
-                style={{ width: "max-content", padding: "4px 10px", fontSize: "11px" }}
-                onClick={() => setPhotoUrl("")}
-              >
-                Remove Photo
-              </button>
-            )}
-            <small>Upload JPG, PNG or WEBP (max 2MB)</small>
-          </div>
-        </div>
+        <PhotoEditor value={photoUrl} onChange={setPhotoUrl} />
       </label>
+
 
       {/* Role Dropdown */}
       <label>
